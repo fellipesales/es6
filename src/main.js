@@ -32,7 +32,7 @@ class App {
 
         this.repositories.push({
             name,
-            description: description === null ? description : '',
+            description,
             avatar_url,
             html_url
         })
@@ -51,10 +51,11 @@ class App {
             titleEl.appendChild(document.createTextNode(repo.name));
 
             let descriptEl = document.createElement('p');
-            descriptEl.appendChild(document.createTextNode(repo.desciptiom));
+            descriptEl.appendChild(document.createTextNode(repo.description));
 
             let linkEl = document.createElement('a');
             linkEl.setAttribute('target', '_blank');
+            linkEl.setAttribute('href', repo.html_url);
             linkEl.appendChild(document.createTextNode('Acessar'));
 
             let listIEl = document.createElement('li');
