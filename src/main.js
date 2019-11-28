@@ -3,6 +3,7 @@ import api from './api';
 class App {
 
     constructor() {
+
         this.repositories = [];
 
         this.formEl = document.getElementById('repo-form');
@@ -13,7 +14,25 @@ class App {
     }
 
     RegisterHandlers() {
+
         this.formEl.onsubmit = event => this.addRepository(event);
+    }
+
+    setLoading(loading = true) {
+
+        if (loading) {
+
+            let loadingEl = document.createElement('span');
+            loadingEl.appendChild(document.createTextNode('Carregando'));
+            loadingEl.setAttribute('id', 'loading');
+
+            this.formEl.appendChild(loadingEl);
+
+        } else {
+
+            document.getElementById('loading').remove();
+
+        }
     }
 
     async addRepository(event) {
@@ -21,23 +40,36 @@ class App {
 
         const repoInput = this.inputEl.value;
 
+        this.setLoading();
+
         if (repoInput.length === 0)
             return;
 
-        const response = await api.get(`/repos/${repoInput}`);
+        try {
 
-        const { name, description, html_url, owner: { avatar_url } } = response.data;
+            const response = await api.get(`/repos/${repoInput}`);
 
-        console.log(response);
+            const { name, description, html_url, owner: { avatar_url } } = response.data;
 
-        this.repositories.push({
-            name,
-            description,
-            avatar_url,
-            html_url
-        })
+            console.log(response);
 
-        this.render();
+            this.repositories.push({
+                name,
+                description,
+                avatar_url,
+                html_url
+            })
+
+            this.inputEl.value = '';
+
+            this.render();
+        }
+        catch (err) {
+            alert('O repositório não existe.');
+        }
+
+        this.setLoading(false);
+
     }
 
     render() {
@@ -69,6 +101,5 @@ class App {
         });
     }
 }
-
 
 new App();
